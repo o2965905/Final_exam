@@ -21,7 +21,7 @@ include_once "./base.php";
 	<iframe name="back" style="display:none;"></iframe>
 	<div id="all">
 		<div id="title">
-			<?= date("m 月 d 號 l"); ?> | 今日瀏覽: <?= $Total->find(['date' => date("Y-m-d")])['total']; ?> | 累積瀏覽: <?= $Total->math('sum', 'total'); ?> 
+			<?= date("m 月 d 號 l"); ?> | 今日瀏覽: <?= $Total->find(['date' => date("Y-m-d")])['total']; ?> | 累積瀏覽: <?= $Total->math('sum', 'total'); ?>
 			<a href="index.php" style="float:right;">回首頁</a>
 		</div>
 		<div id="title2" title="健康促進網" onclick="location.href='index.php'">
@@ -37,15 +37,36 @@ include_once "./base.php";
 				<div>
 					<marquee style="width:80%;display:inline-block">請大家踴躍投稿電子報，讓電子報成為大家相互交流、分享的園地 ! 詳見最新文章</marquee>
 					<span style="width:18%; display:inline-block;">
-						<a href="?do=login">會員登入</a>
+
+						<?php
+						if (isset($_SESSION['user'])) {
+							if ($_SESSION['user'] === 'admin') {
+						?>
+								歡迎，<?= $_SESSION['user']; ?>
+								<button onclick="location.href='back.php'">管理</button>
+								| <button onclick="logout()">登出</button>
+							<?php
+							} else {
+							?>
+								歡迎，<?= $_SESSION['user']; ?>
+								| <button onclick="logout()">登出</button>
+							<?php
+							}
+						} else {
+							?>
+							<a href="?do=login">會員登入</a>
+						<?php
+						}
+						?>
+
 					</span>
 					<div class="content">
 						<?php
-						$do=$_GET['do']??'main';
-						$file="./front/".$do.".php";
-						if(file_exists($file)){
+						$do = $_GET['do'] ?? 'main';
+						$file = "./front/" . $do . ".php";
+						if (file_exists($file)) {
 							include $file;
-						}else{
+						} else {
 							include "./front/main.php";
 						}
 						?>
